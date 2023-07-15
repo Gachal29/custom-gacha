@@ -1,6 +1,6 @@
 "use client"
 import { NextPage } from "next"
-import { FormEvent, useState } from "react"
+import React, { FormEvent, useEffect, useState } from "react"
 
 
 const Home: NextPage = () => {
@@ -41,8 +41,10 @@ const Home: NextPage = () => {
     return contents
   }
 
-  const gachal = (event: FormEvent) => {
-    event.preventDefault()
+  const gachal = (event: FormEvent | undefined = undefined) => {
+    if (event) {
+      event.preventDefault()
+    }
 
     const contentElems = document.querySelectorAll("#form-contents input")
     if (!contentElems) {
@@ -66,6 +68,22 @@ const Home: NextPage = () => {
       resultElem.appendChild(liElem)
     })
   }
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.ctrlKey) {
+      if (e.key=="Enter") {
+        gachal()
+      }
+    } else {
+      if (e.key == "Enter") {
+        handleAddContent()
+      }
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown, false)
+  }, [])
 
   return (
     <main className="text-center">
