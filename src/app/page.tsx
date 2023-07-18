@@ -1,13 +1,11 @@
 "use client"
 import { NextPage } from "next"
-import { title } from "process"
 import React, { FormEvent, useEffect, useState } from "react"
 
 
 const Home: NextPage = () => {
   const [gachaTheme, setGachaTheme] = useState("")
   const [themeDecided, setThemeDecided] = useState(false)
-  // const [gachaled, setGachaled] = useState(false)
 
   const handleThemeDecide = (evnet: FormEvent) => {
     evnet.preventDefault()
