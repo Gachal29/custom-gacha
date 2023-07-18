@@ -15,17 +15,17 @@ const Home: NextPage = () => {
     return false
   }
 
-  const handleDeleteContent = (contentId: number) => {
-    const content = document.getElementById(`content${contentId}`)
+  const handleDeleteContent = (contentId: string) => {
+    const content = document.getElementById(contentId)
     content?.remove()
   }
 
   const handleAddContent = () => {
     const formContents = document.getElementById("form-contents")
     if (formContents) {
-      const contentId = document.querySelectorAll("#form-contents li").length + 1
+      const contentIdNumber = document.querySelectorAll("#form-contents li").length + 1
       const newContent = document.createElement("li")
-      newContent.setAttribute("id", `content${contentId}`)
+      newContent.setAttribute("id", `content${contentIdNumber}`)
       newContent.setAttribute("class", "flex justify-center items-center")
 
       const inputElem = document.createElement("input")
@@ -38,7 +38,7 @@ const Home: NextPage = () => {
       const btnElem = document.createElement("button")
       btnElem.setAttribute("type", "button")
       btnElem.setAttribute("class", "btn btn-circle btn-primary ml-2 p-2")
-      btnElem.addEventListener("click", () => handleDeleteContent(contentId))
+      btnElem.addEventListener("click", () => handleDeleteContent(`content${contentIdNumber}`))
       
       const deleteImgElem = document.createElement("img")
       deleteImgElem.setAttribute("src", "/delete-icon.svg")
@@ -46,6 +46,8 @@ const Home: NextPage = () => {
 
       newContent.appendChild(btnElem)
       formContents.appendChild(newContent)
+
+      inputElem.focus()
     }
   }
 
@@ -77,7 +79,6 @@ const Home: NextPage = () => {
     })
 
     const result = contentsShuffle(contents)
-    // setGachaled(true)
 
     const oldResultElem = document.getElementById("result")
     if (oldResultElem) {
@@ -113,6 +114,20 @@ const Home: NextPage = () => {
     } else {
       if (e.key == "Enter") {
         handleAddContent()
+      } else if (e.key == "Backspace") {
+        const cursolElem = document.activeElement
+        if (cursolElem instanceof HTMLInputElement && cursolElem.value === "") {
+          const parentElem = cursolElem.parentElement
+          if (parentElem && parentElem.id.includes("content") && parentElem.id !== "content1") {
+            const contentId = parentElem.id
+            const previousIdNumber = parseInt(contentId.replace("content", "")) - 1
+            handleDeleteContent(contentId)
+
+            const previousElem = document.getElementById(`content${previousIdNumber}`)
+            const inputElem = previousElem?.querySelector("input")
+            inputElem?.focus()
+          }
+        }
       }
     }
   }
