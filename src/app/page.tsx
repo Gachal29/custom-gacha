@@ -117,6 +117,7 @@ const Home: NextPage = () => {
         if (cursolElem instanceof HTMLInputElement && cursolElem.value === "") {
           const parentElem = cursolElem.parentElement
           if (parentElem && parentElem.id.includes("content") && parentElem.id !== "content1") {
+            e.preventDefault()
             const contentId = parentElem.id
             const previousIdNumber = parseInt(contentId.replace("content", "")) - 1
             handleDeleteContent(contentId)
