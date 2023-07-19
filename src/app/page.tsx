@@ -1,16 +1,20 @@
 "use client"
 import { NextPage } from "next"
-import React, { FormEvent, useEffect, useState } from "react"
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react"
 
 
 const Home: NextPage = () => {
   const [gachaTheme, setGachaTheme] = useState("")
-  const [themeDecided, setThemeDecided] = useState(false)
+  const [selectedMode, setSelectedMode] = useState("")
 
-  const handleThemeDecide = (evnet: FormEvent) => {
-    evnet.preventDefault()
-    setThemeDecided(true)
-    return false
+  const initMode = "lottery"
+  useEffect(() => {
+    setSelectedMode(initMode)
+  },[])
+
+  const handleChangeMode = (event: ChangeEvent) => {
+    const value = (event.target as HTMLInputElement).value
+    setSelectedMode(value)
   }
 
   const handleDeleteContent = (contentId: string) => {
@@ -83,22 +87,33 @@ const Home: NextPage = () => {
       oldResultElem.remove()
     }
 
-    const ulElem = document.createElement("ul")
-    result.forEach((content) => {
-      const liElem = document.createElement("li")
-      liElem.setAttribute("class", "text-2xl my-2")
-      liElem.textContent = content
-      ulElem.appendChild(liElem)
-    })
-
     const resultElem = document.createElement("div")
     resultElem.setAttribute("id", "result")
-    
+
     const titleElem = document.createElement("h1")
     titleElem.setAttribute("class", "text-4xl font-bold my-4")
-    titleElem.textContent = `「${gachaTheme}」リザルト`
+    if (gachaTheme) {
+      titleElem.textContent = `「${gachaTheme}」リザルト`
+    } else {
+      titleElem.textContent = "ガチャリザルト"
+    }
     resultElem.appendChild(titleElem)
-    resultElem.appendChild(ulElem)
+
+    if (selectedMode === "lottery") {
+      const h1Elem = document.createElement("h1")
+      h1Elem.setAttribute("class", "text-6xl my-2")
+      h1Elem.textContent = result[0]
+      resultElem.appendChild(h1Elem)
+    } else if (selectedMode === "sort") {
+      const ulElem = document.createElement("ul")
+      result.forEach((content) => {
+        const liElem = document.createElement("li")
+        liElem.setAttribute("class", "text-2xl my-2")
+        liElem.textContent = content
+        ulElem.appendChild(liElem)
+      })
+      resultElem.appendChild(ulElem)
+    }
 
     const mainElem = document.querySelector("main")
     mainElem?.appendChild(resultElem)
@@ -137,28 +152,56 @@ const Home: NextPage = () => {
 
   return (
     <main className="text-center">
-      <form onSubmit={(e) => handleThemeDecide(e)} className="mb-8">
-        <input
-          type="text"
-          className="input input-bordered w-full max-w-xs md:mr-4"
-          placeholder="〇〇ガチャ"
-          required
-          onChange={(e) => {setGachaTheme(e.target.value)} } />
+      <div className="w-full flex items-center justify-center my-4">
+        <div className="text-left">
+          <h1 className="text-2xl mb-2">ガチャ設定</h1>
+          <input
+            type="text"
+            className="input input-bordered w-full max-w-xs mb-2"
+            placeholder="〇〇ガチャ"
+            required
+            onChange={(e) => (setGachaTheme(e.target.value))} />
+          
+          <div className="form-control">
+            <label className="label cursor-pointer">
+              <span className="label-text">抽選</span> 
+              <input
+                type="radio"
+                name="mode"
+                value="lottery"
+                className="radio checked:bg-red-500"
+                checked={selectedMode === "lottery"}
+                onChange={handleChangeMode} />
+            </label>
+          </div>
+          <div className="form-control">
+            <label className="label cursor-pointer">
+              <span className="label-text">ソート</span> 
+              <input
+                type="radio"
+                name="mode"
+                value="sort"
+                className="radio checked:bg-blue-500"
+                checked={selectedMode === "sort"}
+                onChange={handleChangeMode} />
+            </label>
+          </div>
+        </div>
+      </div>
 
-        <button type="submit" className="btn btn-neutral my-2">テーマを決定する</button>
-      </form>
-
-      {themeDecided && <h1 className="text-4xl font-bold my-4">{ gachaTheme }</h1>}
-      <form onSubmit={(e) => gachal(e) }>
-        <ul id="form-contents">
-          <li id="content1">
-            <input
-              type="text"
-              className="input input-bordered input-primary w-full max-w-xs my-2"
-              placeholder="コンテンツ"
-              required />
-          </li>
-        </ul>
+      {gachaTheme && <h1 className="text-4xl font-bold my-4">{ gachaTheme }</h1>}
+      <form onSubmit={(e) => gachal(e)}>
+        <div className="w-full flex justify-center items-center">
+          <ul id="form-contents" className="text-left">
+            <li id="content1">
+              <input
+                type="text"
+                className="input input-bordered input-primary w-full max-w-xs my-4"
+                placeholder="コンテンツ"
+                required />
+            </li>
+          </ul>
+        </div>
         <button type="button" className="btn btn-circle btn-outline my-2" onClick={ handleAddContent }>
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <line x1="12" x2="12" y2="24" stroke-width="4"/>
@@ -168,8 +211,6 @@ const Home: NextPage = () => {
         <br />
         <button type="submit" className="btn btn-primary btn-wide my-2">ガチャる</button>
       </form>
-
-      {/* {gachaled && gachaTheme && <h1 className="text-4xl font-bold my-4">「{ gachaTheme }」リザルト</h1>} */}
     </main>
   )
 }
