@@ -1,6 +1,7 @@
 "use client"
 import { NextPage } from "next"
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react"
+import { contentsShuffle } from "utils/contentsShuffle"
 
 
 const Home: NextPage = () => {
@@ -51,18 +52,6 @@ const Home: NextPage = () => {
 
       inputElem.focus()
     }
-  }
-
-  const contentsShuffle = (contents: Array<string>): Array<string> => {
-    for (let i = (contents.length - 1); 0 < i; i--) {
-      let r = Math.floor(Math.random() * (i + 1))
-
-      let tmp = contents[i]
-      contents[i] = contents[r]
-      contents[r] = tmp
-    }
-
-    return contents
   }
 
   const gachal = (event: FormEvent | undefined = undefined) => {
