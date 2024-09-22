@@ -193,8 +193,8 @@ const Home: NextPage = () => {
         </div>
         <button type="button" className="btn btn-circle btn-outline my-2" onClick={ handleAddContent }>
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <line x1="12" x2="12" y2="24" stroke-width="4"/>
-            <line y1="12" x2="24" y2="12" stroke-width="4"/>
+            <line x1="12" x2="12" y2="24" strokeWidth="4"/>
+            <line y1="12" x2="24" y2="12" strokeWidth="4"/>
           </svg>
         </button>
         <br />
